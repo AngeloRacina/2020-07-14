@@ -7,7 +7,9 @@ package it.polito.tdp.PremierLeague;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.PremierLeague.model.Classifica;
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,7 +37,7 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<Team> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -49,11 +51,34 @@ public class FXMLController {
     @FXML
     void doClassifica(ActionEvent event) {
 
+    	Team t = cmbSquadra.getValue();
+    	
+    	if(t == null)
+    		txtResult.appendText("Selezionare una squadra! \n");
+    	
+    	txtResult.appendText("Squadre migliori: \n");
+    	for(Classifica i : model.getSquadreMigliori(t))
+    		txtResult.appendText(i+"\n");
+    	
+    	txtResult.appendText("Squadre Peggiori: \n");
+    	for(Classifica i : model.getSquadrePeggiori(t))
+    		txtResult.appendText(i+"\n");
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
 
+    	try {
+    		this.model.creaGrafo();
+    		txtResult.appendText("Grafo creato! \n"
+    				+ "#vertici: "+this.model.nVertices()+"\n"
+    				+"#archi: "+this.model.nEdges());
+    	}catch(Exception e ) {
+    		System.out.println("Errore nella vreazione del grafo");
+    	}
+    	
+    	cmbSquadra.getItems().addAll(this.model.getTeams());
     }
 
     @FXML
